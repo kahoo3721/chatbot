@@ -15,11 +15,7 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 // 配列に格納された各イベントをループで処理
 foreach ($events as $event) {
 //画像を返信
-replyImageMessage($bot, $event->getReplyToken(), 'https://' .
-                                   $_SERVER['HTTP_HOST'] .
-                                   '/imgs/original.jpg',
-                                   'https://' . $_SERVER['HTTP_HOST'] .
-                                   '/imgs/preview.jpg');
+replyImageMessage($bot, $event->getReplyToken(), 'https://' . $_SERVER['HTTP_HOST'] . '/imgs/original.jpg', 'https://' . $_SERVER['HTTP_HOST'] . '/imgs/preview.jpg');
 }
 
 
