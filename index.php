@@ -20,6 +20,8 @@ replyImageMessage($bot, $event->getReplyToken(), 'https://' .
                                    '/imgs/original.jpg',
                                    'https://' . $_SERVER['HTTP_HOST'] .
                                    '/imgs/preview.jpg');
+}
+
 
   // テキストを返信。引数はLINEBot、返信先、テキスト
   function replyTextMessage($bot, $replyToken, $text) {
