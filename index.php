@@ -2,11 +2,11 @@
 
 require_once__DIR__ . '/vendor/autoload.php';
 
-$httpClient = new \LINE\LINEBot\httpClient\CurlHTTPClient(getenv
-('CHANNEL_ACCESS_TOKEN'));
+$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient(getenv
+                      ('CHANNEL_ACCESS_TOKEN'));
 
 $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => getenv
-('CHANNEL_SECRET')]);
+                      ('CHANNEL_SECRET')]);
 
 $signature = $_SERVER['HTTP_' . \LINE\LINEBot\constant\HTTPHeader
 ::LINE_SIGNATURE];
