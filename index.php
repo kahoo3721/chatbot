@@ -38,5 +38,8 @@ replyImageMessage($bot, $event->getReplyToken(), 'https://' . $_SERVER['HTTP_HOS
     $response = $bot->replyMessage($replyToken, new \LINE\LINEBot\MessageBuilder\ImageMessageBuilder($originalImageUrl, $previewImageUrl));
     if (!$response->isSucceeded()) {
       error_log('Failed!'. $response->getHTTPStatus . ' ' . $response->getRawBody());
+}
+
+}
 
 ?>
