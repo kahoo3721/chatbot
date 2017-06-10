@@ -15,6 +15,14 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 // 配列に格納された各イベントをループで処理
 foreach ($events as $event) {
 
+//PostBackEventクラスのインスタンスなら
+  if ($event instanceof \LINE\LINEBot\Event\PostBackEvent) {
+//テキストを送信し次のイベント処理へ
+  replyTextMessage($bot, $event->getReplyToken(),
+  'PostBack受信　「'$event->getPostbackDate() . '」');
+  continue;
+}
+
 //Bottonsテンプレートメッセージ送信
 replyButtonsTemplate($bot, $event->getReplyToken(),
   'お天気お知らせ－今日の天気予報は晴れです',
