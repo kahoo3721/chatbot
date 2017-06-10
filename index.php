@@ -20,7 +20,7 @@ foreach ($events as $event) {
 if ($event instanceof \LINE\LINEBot\Event\MessageEvent\ImageMessage){
   //イベントコンテンツ取得
   $content = $bot->getMessageContent($event->getMessageId());
-  //コンテンツヘッダーを週末
+  //コンテンツヘッダーを取得
   $hesders = $content->getHeaders();
   error_log(var_export($headers, true));
   //画像の保存先フォルダ
@@ -30,9 +30,9 @@ if ($event instanceof \LINE\LINEBot\Event\MessageEvent\ImageMessage){
   //コンテンツの種類を取得
   $extension = explode('/', $headers['Content-Type'])[1];
   //保存先フォルダなしの場合
-  if(!file_exists($directory_path)){
+  if(!file_exists($directory_path)) {
     //フォルダ作成
-    if(mkdir($directory_path, 0777, true)){
+    if(mkdir($directory_path, 0777, true)) {
       //権限を変更
       chmod($directory_path, 0777);
 
