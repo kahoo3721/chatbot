@@ -15,11 +15,11 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 // 配列に格納された各イベントをループで処理
 foreach ($events as $event) {
 
-//動画送信
-replyVideoMessage($bot, $event->getReplyToken(),
-       'https://' . $_SERVER['HTTP_HOST'] . '/videos/sample.mp4',
-       'https://' . $_SERVER['HTTP_HOST'] . '/videos/sample_preview.jpg');
-       
+//オーディオ送信
+replyAudioMessage($bot, $event->getReplyToken(), 'https://' .
+                        $_SERVER['HTTP_HOST'] .
+                        '/audios/sample.m4a', 6000);
+                        
 }
 
 
@@ -77,5 +77,15 @@ function replyVideoMessage($bot, $replyToken, $originalContentUrl, $previewImage
   }
 }
 
+
+// オーディオファイルを返信。引数はLINEBot、返信先、
+// ファイルのURL、ファイルの再生時間
+function replyAudioMessage($bot, $replyToken, $originalContentUrl, $audioLength) {
+  // AudioMessageBuilderの引数はファイルのURL、ファイルの再生時間
+  $response = $bot->replyMessage($replyToken, new \LINE\LINEBot\MessageBuilder\AudioMessageBuilder($originalContentUrl, $audioLength));
+  if (!$response->isSucceeded()) {
+    error_log('Failed! '. $response->getHTTPStatus . ' ' . $response->getRawBody());
+  }
+}
 
 ?>
