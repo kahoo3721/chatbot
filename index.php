@@ -16,7 +16,7 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 foreach ($events as $event) {
 
 //PostBackEventクラスのインスタンスなら
-  if ($event instanceof \LINE\LINEBot\Event\PostBackEvent) {
+  if ($event instanceof \LINE\LINEBot\Event\PostbackEvent) {
 
 //テキストを送信し次のイベント処理へ
   replyTextMessage($bot, $event->getReplyToken(), 'PostBack受信「' . $event->getPostbackDate() . '」');
