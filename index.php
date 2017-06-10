@@ -14,9 +14,8 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 
 // 配列に格納された各イベントをループで処理
 foreach ($events as $event) {
-//画像を返信
-replyImageMessage($bot, $event->getReplyToken(), 'https://' . $_SERVER['HTTP_HOST'] . '/imgs/original.jpg', 'https://' . $_SERVER['HTTP_HOST'] . '/imgs/preview.jpg');
-}
+//位置情報を送信
+replyLocationMessage($bot, $event->getReplyToken(), 'LINE', '東京都渋谷区渋谷2-22-1　ヒカリエ27階', 35.659025, 139.703473);
 
 
   // テキストを返信。引数はLINEBot、返信先、テキスト
@@ -38,8 +37,18 @@ replyImageMessage($bot, $event->getReplyToken(), 'https://' . $_SERVER['HTTP_HOS
     $response = $bot->replyMessage($replyToken, new \LINE\LINEBot\MessageBuilder\ImageMessageBuilder($originalImageUrl, $previewImageUrl));
     if (!$response->isSucceeded()) {
       error_log('Failed!'. $response->getHTTPStatus . ' ' . $response->getRawBody());
+  }
 }
 
+// 位置情報を返信。引数はLINEBot、返信先、タイトル、住所、
+// 緯度、経度
+function replyLocationMessage($bot, $replyToken, $title, $address, $lat, $lon) {
+  // LocationMessageBuilderの引数はダイアログのタイトル、住所、緯度、経度
+  $response = $bot->replyMessage($replyToken, new \LINE\LINEBot\MessageBuilder\LocationMessageBuilder($title, $address, $lat, $lon));
+  if (!$response->isSucceeded()) {
+    error_log('Failed!'. $response->getHTTPStatus . ' ' . $response->getRawBody());
+  }
 }
+
 
 ?>
