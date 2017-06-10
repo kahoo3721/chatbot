@@ -15,31 +15,39 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 // 配列に格納された各イベントをループで処理
 foreach ($events as $event) {
 
-//Carouselテンプレート
-//ダイアログの配列
-$columnArray = array();
-  for ($i = 0; $i < 5; $i++) {
-    //アクションの配列
-    $actionArray = array();
-    array_push($actionArray, new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder (
-      'ボタン' . $i . '-' . 1, 'c-' . $i . '-' . 1));
-    array_push($actionArray, new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder (
-      'ボタン' . $i . '-' . 2, 'c-' . $i . '-' . 2));
-    array_push($actionArray, new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder (
-      'ボタン' . $i . '-' . 3, 'c-' . $i . '-' . 3));
-    $column = new LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselColumnTemplateBuilder (
-            ($i + 1) . '日後の天気',
-            '晴れ',
-            'https://' . $_SERVER['HTTP_HOST'] . '/imgs/template.jpg',
-            $actionArray
-          );
-    //配列に追加
-    array_push($columnArray, $column);
+//画像取得：サーバーに保存
+//ImageMessageなら
+if ($event instanceof \LINE\LINEBot\Event\MessageEvent\ImageMessage){
+  //イベントコンテンツ取得
+  $content = $bot->getMessageContent($event->getMessageId());
+  //コンテンツヘッダーを週末
+  $hesders = $content->getHeaders();
+  error_log(var_export($headers, true));
+  //画像の保存先フォルダ
+  $directory_path = 'tmp';
+  //保存するファイル名
+  $filename = uniqid();
+  //コンテンツの種類を取得
+  $extension = explode('/', $headers['Content-Type'])[1];
+  //保存先フォルダなしの場合
+  if(!file_exists($directory_path)){
+    //フォルダ作成
+    if(mkdir($directory_path, 0777, true)){
+      //権限を変更
+      chmod($directory_path, 0777);
+
+    }
   }
-
-  replyCarouselTemplate($bot, $event->getReplyToken(), '今後の天気予報', $columnArray);
-
+//保存先フォルダにコンテンツ保存
+file_put_contents($directory_path . '/' . $filename . '.' . $extension,
+$content->getRawBody());
+//保存したファイルのURLを送信
+replyTextMessage($bot, $event->getReplyToken(), 'http://' . $_SERVER[
+  'HTTP_HOST'] . '/' . $directory_path. '/' . $filename . '.' . $extension);
 }
+}
+
+
 // テキストを返信。引数はLINEBot、返信先、テキスト
   function replyTextMessage($bot, $replyToken, $text) {
     // 返信を行いレスポンスを取得
