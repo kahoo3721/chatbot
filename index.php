@@ -28,7 +28,7 @@ replyMultiMessage($bot, $event->getReplyToken(),
                       35.659025, 139.703473),
 
                       new \LINE\LINEBot\MessageBuilder\StickerMessageBuilder(1, 1)
-)
+);
 
 }
 
