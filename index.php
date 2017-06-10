@@ -18,16 +18,16 @@ foreach ($events as $event) {
 //Carouselテンプレート
 //ダイアログの配列
 $columnArray = array();
-  for ($i=0; $i < 5; $i++) {
+  for ($i = 0; $i < 5; $i++) {
     //アクションの配列
     $actionArray = array();
-    array_push($actionArray, new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder(
+    array_push($actionArray, new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder (
       'ボタン' . $i . '-' . 1, 'c-' . $i . '-' . 1));
-    array_push($actionArray, new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder(
+    array_push($actionArray, new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder (
       'ボタン' . $i . '-' . 2, 'c-' . $i . '-' . 2));
-    array_push($actionArray, new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder(
+    array_push($actionArray, new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder (
       'ボタン' . $i . '-' . 3, 'c-' . $i . '-' . 3));
-    $column = new LINE\LINEBot\MessageBuilder\TemplateBuilder(
+    $column = new LINE\LINEBot\MessageBuilder\TemplateBuilder (
             ($i + 1) . '日後の天気',
             '晴れ',
             'https://' . $_SERVER['HTTP_HOST'] . '/imgs/template.jpg',
@@ -39,11 +39,6 @@ $columnArray = array();
   replyCarouselTemplate($bot, $event->getReplyToken(), '今後の天気予報', $columnArray);
 
 }
-
-
-
-
-
 // テキストを返信。引数はLINEBot、返信先、テキスト
   function replyTextMessage($bot, $replyToken, $text) {
     // 返信を行いレスポンスを取得
