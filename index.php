@@ -21,7 +21,7 @@ if ($event instanceof \LINE\LINEBot\Event\MessageEvent\ImageMessage){
   //イベントコンテンツ取得
   $content = $bot->getMessageContent($event->getMessageId());
   //コンテンツヘッダーを取得
-  $hesders = $content->getHeaders();
+  $headers = $content->getHeaders();
   error_log(var_export($headers, true));
   //画像の保存先フォルダ
   $directory_path = 'tmp';
