@@ -15,36 +15,19 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 // 配列に格納された各イベントをループで処理
 foreach ($events as $event) {
 
-//画像取得：サーバーに保存
-//ImageMessageなら
-if ($event instanceof \LINE\LINEBot\Event\MessageEvent\ImageMessage){
-  //イベントコンテンツ取得
-  $content = $bot->getMessageContent($event->getMessageId());
-  //コンテンツヘッダーを取得
-  $headers = $content->getHeaders();
-  error_log(var_export($headers, true));
-  //画像の保存先フォルダ
-  $directory_path = 'tmp';
-  //保存するファイル名
-  $filename = uniqid();
-  //コンテンツの種類を取得
-  $extension = explode('/', $headers['Content-Type'])[1];
-  //保存先フォルダなしの場合
-  if(!file_exists($directory_path)) {
-    //フォルダ作成
-    if(mkdir($directory_path, 0777, true)) {
-      //権限を変更
-      chmod($directory_path, 0777);
-
-    }
-  }
-//保存先フォルダにコンテンツ保存
-file_put_contents($directory_path . '/' . $filename . '.' . $extension,
-$content->getRawBody());
-//保存したファイルのURLを送信
-replyTextMessage($bot, $event->getReplyToken(), 'http://' . $_SERVER[
-  'HTTP_HOST'] . '/' . $directory_path. '/' . $filename . '.' . $extension);
-}
+//ユーザーのプロフィールを取得：メッセージ作成後返信
+$profile = $bot->getProfile($event->getUserId())->getJSONDecodedBody();
+$bot->replyMessage($event->getReplyToken(),
+  (new \LINE\LINEBot\MessageBuilder\MultiMessageBuilder())
+  ->add(new \LINE\LINEBot\MessageBuilder\TextMessageBuilder(
+    '現在のプロフィールです。'))
+    ->add(new \LINE\LINEBot\MessageBuilder\TextMessageBuilder(
+      '表示名：' . $profile['displayName']))
+      ->add(new \LINE\LINEBot\MessageBuilder\TextMessageBuilder(
+        '画像URL：' . $profile['pictureUrl']))
+      ->add(new \LINE\LINEBot\MessageBuilder\TextMessageBuilder(
+        'ステータスメッセージ：' . $profile['statusMessage']))
+);
 }
 
 
