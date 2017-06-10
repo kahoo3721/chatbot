@@ -15,12 +15,15 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 // 配列に格納された各イベントをループで処理
 foreach ($events as $event) {
 
-//スタンプ送信
-replyStickerMessage($bot, $event->getReplyToken(), 1, 1);
-
+//動画送信
+replyVideoMessage($bot, $event->getReplyToken(),
+       'https://' . $_SERVER['HTTP_HOST'] . '/videos/sample.mp4',
+       'https://' . $_SERVER['HTTP_HOST'] . '/videos/sample_preview.jpg');
+       
 }
 
-  // テキストを返信。引数はLINEBot、返信先、テキスト
+
+// テキストを返信。引数はLINEBot、返信先、テキスト
   function replyTextMessage($bot, $replyToken, $text) {
     // 返信を行いレスポンスを取得
     // TextMessageBuilderの引数はテキスト
@@ -33,7 +36,7 @@ replyStickerMessage($bot, $event->getReplyToken(), 1, 1);
   }
 
 
-  // 画像を返信。引数はLINEBot、返信先、画像URL、サムネイルURL
+// 画像を返信。引数はLINEBot、返信先、画像URL、サムネイルURL
   function replyImageMessage($bot, $replyToken, $originalImageUrl, $previewImageUrl) {
     // ImageMessageBuilderの引数は画像URL、サムネイルURL
     $response = $bot->replyMessage($replyToken, new \LINE\LINEBot\MessageBuilder\ImageMessageBuilder($originalImageUrl, $previewImageUrl));
@@ -41,6 +44,7 @@ replyStickerMessage($bot, $event->getReplyToken(), 1, 1);
       error_log('Failed!'. $response->getHTTPStatus . ' ' . $response->getRawBody());
   }
 }
+
 
 // 位置情報を返信。引数はLINEBot、返信先、タイトル、住所、
 // 緯度、経度
@@ -60,6 +64,16 @@ function replyStickerMessage($bot, $replyToken, $packageId, $stickerId) {
   $response = $bot->replyMessage($replyToken, new \LINE\LINEBot\MessageBuilder\StickerMessageBuilder($packageId, $stickerId));
   if (!$response->isSucceeded()) {
     error_log('Failed!'. $response->getHTTPStatus . ' ' . $response->getRawBody());
+  }
+}
+
+
+// 動画を返信。引数はLINEBot、返信先、動画URL、サムネイルURL
+function replyVideoMessage($bot, $replyToken, $originalContentUrl, $previewImageUrl) {
+  // VideoMessageBuilderの引数は動画URL、サムネイルURL
+  $response = $bot->replyMessage($replyToken, new \LINE\LINEBot\MessageBuilder\VideoMessageBuilder($originalContentUrl, $previewImageUrl));
+  if (!$response->isSucceeded()) {
+    error_log('Failed! '. $response->getHTTPStatus . ' ' . $response->getRawBody());
   }
 }
 
