@@ -19,7 +19,7 @@ foreach ($events as $event) {
   if ($event instanceof \LINE\LINEBot\Event\PostbackEvent) {
 
 //テキストを送信し次のイベント処理へ
-  replyTextMessage($bot, $event->getReplyToken(), 'PostBack受信「' . $event->getReplyToken() . '」');
+  replyTextMessage($bot, $event->getReplyToken(), 'PostBack受信「' . $event->getPostbackDate() . '」');
 
   continue;
 }
