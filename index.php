@@ -15,26 +15,15 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 // 配列に格納された各イベントをループで処理
 foreach ($events as $event) {
 
-//PostBackEventクラスのインスタンスなら
-  if ($event instanceof \LINE\LINEBot\Event\PostbackEvent) {
-
-//テキストを送信し次のイベント処理へ
-  replyTextMessage($bot, $event->getReplyToken(), 'PostBack受信「' .$event->getPostbackDate() . '」');
-
-  continue;
-}
-
-//Bottonsテンプレートメッセージ送信
-replyButtonsTemplate($bot, $event->getReplyToken(),
-  'お天気お知らせ－今日の天気予報は晴れです',
-  'https://' . $_SERVER['HTTP_HOST'] . '/imgs/template.jpg',
-  'お天気お知らせ',
-  '今日の天気予報は晴れです',
-  new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder ('明日の天気', 'tomorrow'),
-  new LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder ('週末の天気', 'weekend'),
-  new LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder ('webで見る', 'http://google.jp')
-);
-
+replyConfirmTemplate($bot, $event->getReplyToken(),
+                'webで詳しく見ますか？',
+                'webで詳しく見ますか？',
+                new LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder (
+                  '見る', 'http://google.jp'),
+                new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder (
+                  '見ない', 'ignore')
+                );
+                
 }
 
 
@@ -135,6 +124,25 @@ function replyButtonsTemplate($bot, $replyToken, $alternativeText, $imageUrl, $t
     // ButtonTemplateBuilderの引数はタイトル、本文、
     // 画像URL、アクションの配列
     new \LINE\LINEBot\MessageBuilder\TemplateBuilder\ButtonTemplateBuilder ($title, $text, $imageUrl, $actionArray)
+  );
+  $response = $bot->replyMessage($replyToken, $builder);
+  if (!$response->isSucceeded()) {
+    error_log('Failed!'. $response->getHTTPStatus . ' ' . $response->getRawBody());
+  }
+}
+
+
+// Confirmテンプレートを返信。引数はLINEBot、返信先、代替テキスト、
+// 本文、アクション(可変長引数)
+function replyConfirmTemplate($bot, $replyToken, $alternativeText, $text, ...$actions) {
+  $actionArray = array();
+  foreach($actions as $value) {
+    array_push($actionArray, $value);
+  }
+  $builder = new \LINE\LINEBot\MessageBuilder\TemplateMessageBuilder(
+    $alternativeText,
+    // Confirmテンプレートの引数はテキスト、アクションの配列
+    new \LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder ($text, $actionArray)
   );
   $response = $bot->replyMessage($replyToken, $builder);
   if (!$response->isSucceeded()) {
