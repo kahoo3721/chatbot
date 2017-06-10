@@ -15,15 +15,32 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 // 配列に格納された各イベントをループで処理
 foreach ($events as $event) {
 
-replyConfirmTemplate($bot, $event->getReplyToken(),
-                'webで詳しく見ますか？',
-                'webで詳しく見ますか？',
-                new LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder (
-                  '見る', 'http://google.jp'),
-                new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder (
-                  '見ない', 'ignore')
-                );
-                
+//Carouselテンプレート
+//ダイアログの配列
+$columnArray = array();
+  for ($i=0; $i < 5; $i++) {
+    //アクションの配列
+    $actionArray = array();
+    array_push($actionArray, new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder(
+      'ボタン' . $i . '-' . 1, 'c-' . $i . '-' . 1));
+    array_push($actionArray, new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder(
+      'ボタン' . $i . '-' . 2, 'c-' . $i . '-' . 2));
+    array_push($actionArray, new LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder(
+      'ボタン' . $i . '-' . 3, 'c-' . $i . '-' . 3));
+    $column = new LINE\LINEBot\MessageBuilder\TemplateBuilder(
+            ($i + 1) . '日後の天気',
+            '晴れ',
+            'https://' . $_SERVER['HTTP_HOST'] . '/imgs/template.jpg',
+            $actionArray
+          );
+    //配列に追加
+    array_push($columnArray, $column);
+  }
+  replyCarouselTemplate($bot, $event->getReplyToken(), '今後の天気予報', $columnArray);
+  
+  }
+
+
 }
 
 
@@ -143,6 +160,22 @@ function replyConfirmTemplate($bot, $replyToken, $alternativeText, $text, ...$ac
     $alternativeText,
     // Confirmテンプレートの引数はテキスト、アクションの配列
     new \LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder ($text, $actionArray)
+  );
+  $response = $bot->replyMessage($replyToken, $builder);
+  if (!$response->isSucceeded()) {
+    error_log('Failed!'. $response->getHTTPStatus . ' ' . $response->getRawBody());
+  }
+}
+
+
+// Carouselテンプレートを返信。引数はLINEBot、返信先、代替テキスト、
+// ダイアログの配列
+function replyCarouselTemplate($bot, $replyToken, $alternativeText, $columnArray) {
+  $builder = new \LINE\LINEBot\MessageBuilder\TemplateMessageBuilder(
+  $alternativeText,
+  // Carouselテンプレートの引数はダイアログの配列
+  new \LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder (
+   $columnArray)
   );
   $response = $bot->replyMessage($replyToken, $builder);
   if (!$response->isSucceeded()) {
