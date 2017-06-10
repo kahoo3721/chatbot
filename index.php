@@ -17,9 +17,10 @@ foreach ($events as $event) {
 
 //PostBackEventクラスのインスタンスなら
   if ($event instanceof \LINE\LINEBot\Event\PostBackEvent) {
+
 //テキストを送信し次のイベント処理へ
-  replyTextMessage($bot, $event->getReplyToken(),
-   'PostBack受信　「' . $event->getPostbackDate() . '」');
+  replyTextMessage($bot, $event->getReplyToken(), 'PostBack受信「' . $event->getPostbackDate() . '」');
+
   continue;
 }
 
