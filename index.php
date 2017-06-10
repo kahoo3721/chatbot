@@ -15,8 +15,9 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
 // 配列に格納された各イベントをループで処理
 foreach ($events as $event) {
 //位置情報を送信
-replyLocationMessage($bot, $event->getReplyToken(), 'LINE', '東京都渋谷区渋谷2-22-1　ヒカリエ27階', 35.659025, 139.703473);
+replyLocationMessage($bot, $event->getReplyToken(), 'LINE', '東京都渋谷区渋谷2-22-1 ヒカリエ27階', 35.659025, 139.703473);
 
+}
 
   // テキストを返信。引数はLINEBot、返信先、テキスト
   function replyTextMessage($bot, $replyToken, $text) {
